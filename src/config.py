@@ -2,7 +2,7 @@ import os
 
 # Configuración general del sistema
 FS = 44100             
-PALABRA = "pasabandas"       
+PALABRA = "Desoxirribonucleótido"       
 NUM_SUBBANDAS = 4       
 DURACION_GRABACION = 2  
 
