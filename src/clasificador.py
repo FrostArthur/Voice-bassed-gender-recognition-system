@@ -5,9 +5,6 @@ def calcular_distancia_euclidiana(vec1, vec2):
     return np.linalg.norm(np.array(vec1) - np.array(vec2))
 
 def clasificar_minima_distancia(caracteristicas, modelo_path):
-    """
-    Clasifica por mínima distancia con respecto a los centroides del modelo JSON.
-    """
     with open(modelo_path, 'r') as f:
         modelo = json.load(f)
         

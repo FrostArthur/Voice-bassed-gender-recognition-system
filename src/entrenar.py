@@ -8,10 +8,6 @@ from preprocesamiento import normalizar_audio
 from banco_filtros import extraer_caracteristicas
 
 def entrenar_modelo():
-    """
-    Lee las grabaciones diversas, extrae características y guarda 
-    los vectores promedio (centroides) en formato JSON legible.
-    """
     clases = ['hombre', 'mujer']
     centroides = {}
     
@@ -29,15 +25,13 @@ def entrenar_modelo():
             caracteristicas_clase.append(feats)
             
         if caracteristicas_clase:
-            # Promedio de todas las grabaciones para crear el vector representativo (centroide)
             centroide = np.mean(caracteristicas_clase, axis=0).tolist()
             centroides[clase] = centroide
             print(f"[{clase}] Entrenado con {len(archivos)} audios.")
         else:
             print(f"ADVERTENCIA: No hay audios en {ruta}")
-            centroides[clase] = [0.0] * 8 # Fallback
+            centroides[clase] = [0.0] * 8 
             
-    # Guardar vectores en JSON (legible)
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
     with open(MODEL_PATH, 'w') as f:
         json.dump(centroides, f, indent=4)

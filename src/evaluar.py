@@ -7,9 +7,6 @@ from banco_filtros import extraer_caracteristicas
 from clasificador import clasificar_minima_distancia
 
 def evaluar_sistema():
-    """
-    Calcula el margen de error del sistema sobre el conjunto de audios.
-    """
     clases = ['hombre', 'mujer']
     aciertos = 0
     total = 0

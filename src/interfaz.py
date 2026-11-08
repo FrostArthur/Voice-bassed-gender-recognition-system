@@ -4,7 +4,6 @@ import threading
 import sounddevice as sd
 import os
 
-# Importar los módulos previamente creados
 from config import FS, DURACION_GRABACION, PALABRA, MODEL_PATH
 from preprocesamiento import normalizar_audio
 from banco_filtros import extraer_caracteristicas
@@ -17,8 +16,7 @@ class ReconocedorVozGUI:
         self.root.geometry("450x350")
         self.root.configure(bg="#f0f4f8")
         self.root.resizable(False, False)
-
-        # Verificar si el modelo existe antes de iniciar
+        
         if not os.path.exists(MODEL_PATH):
             messagebox.showwarning(
                 "Modelo no encontrado", 
@@ -84,11 +82,9 @@ class ReconocedorVozGUI:
         self.lbl_resultado.pack(pady=20)
 
     def iniciar_grabacion_thread(self):
-        # Deshabilitar botón durante la grabación
         self.btn_grabar.config(state=tk.DISABLED, bg="#cccccc")
         self.lbl_resultado.config(text="-")
         
-        # Iniciar un hilo separado para no congelar la interfaz gráfica
         hilo = threading.Thread(target=self.proceso_grabacion_reconocimiento)
         hilo.start()
 
@@ -97,7 +93,7 @@ class ReconocedorVozGUI:
             # 1. Captura en tiempo real
             self.lbl_estado.config(text=f"Grabando ({DURACION_GRABACION}s)... ¡Habla ahora!", fg="#d9534f")
             grabacion = sd.rec(int(DURACION_GRABACION * FS), samplerate=FS, channels=1, dtype='float32')
-            sd.wait() # Esperar a que termine la captura del micrófono
+            sd.wait() 
             
             # 2. Procesamiento
             self.lbl_estado.config(text="Procesando señal...", fg="#f0ad4e")
@@ -120,7 +116,6 @@ class ReconocedorVozGUI:
             messagebox.showerror("Error", f"Ocurrió un error: {str(e)}")
             
         finally:
-            # Reactivar botón
             self.btn_grabar.config(state=tk.NORMAL, bg="#4CAF50")
 
 if __name__ == "__main__":
