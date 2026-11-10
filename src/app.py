@@ -8,17 +8,17 @@ import sounddevice as sd
 
 from src.core.clasificador import METRICAS, analizar
 from src.core.entrenamiento import cargar_modelo
+from src.core.energia import N_BANDAS
 from src.core.espectro import FS, N_PUNTOS
 
 UMBRAL_RMS = 1e-3   
 NOMBRES = {"hombre": "HOMBRE", "mujer": "MUJER"}
 
 class App:
-    def __init__(self, raiz, clases, medias, desviaciones, palabra):
+    def __init__(self, raiz, clases, vectores, palabra):
         self.raiz = raiz
         self.clases = clases
-        self.medias = medias
-        self.desviaciones = desviaciones
+        self.vectores = vectores
         self.palabra = palabra
         self.cola = queue.Queue()
         self.ultima_senal = None  
@@ -30,7 +30,7 @@ class App:
         self.btn_grabar = ttk.Button(barra, text="Grabar 2 s y clasificar", command=self.grabar)
         self.btn_grabar.pack(side="left")
         ttk.Label(barra, text="Distancia:").pack(side="left", padx=(16, 4))
-        self.metrica = tk.StringVar(value="Euclidiana")
+        self.metrica = tk.StringVar(value="Resta absoluta")
         combo = ttk.Combobox(barra, textvariable=self.metrica, values=list(METRICAS),
                              state="readonly", width=24)
         combo.pack(side="left")
@@ -79,8 +79,7 @@ class App:
         self.ultima_senal = senal
         rms = float(np.sqrt(np.mean(senal ** 2)))
         try:
-            res = analizar(senal, self.clases, self.medias, self.desviaciones,
-                           self.metrica.get())
+            res = analizar(senal, self.clases, self.vectores, self.metrica.get())
         except Exception as e:
             messagebox.showerror("Análisis", str(e))
             return
@@ -95,8 +94,11 @@ class App:
 
         lineas = ["Distancia a cada clase (menor = más parecida):"]
         lineas += [f"  {c:<8} {x:10.4f}" for c, x in zip(self.clases, res["distancias"])]
-        lineas += ["", "Energía por sub-banda de la captura:",
-                   "  " + "  ".join(f"B{i + 1}={e:.4f}" for i, e in enumerate(res["vector"]))]
+        v = res["vector"]
+        lineas += ["", "Energía promedio por sub-banda de la captura:",
+                   "  " + "  ".join(f"E{i + 1}={e:.2f}" for i, e in enumerate(v[:N_BANDAS])),
+                   "Desviación promedio por sub-banda de la captura:",
+                   "  " + "  ".join(f"D{i + 1}={e:.2f}" for i, e in enumerate(v[N_BANDAS:]))]
         self.lbl_detalle.config(text="\n".join(lineas))
 
     def reclasificar(self):
@@ -106,7 +108,7 @@ class App:
 def iniciar_app():
     raiz = tk.Tk()
     try:
-        clases, medias, desviaciones, palabra = cargar_modelo()
+        clases, vectores, palabra = cargar_modelo()
     except Exception as e:
         messagebox.showerror(
             "Modelo",
@@ -114,7 +116,7 @@ def iniciar_app():
             "Ejecuta primero:  python -m src.core.entrenamiento")
         raiz.destroy()
         return
-    App(raiz, clases, medias, desviaciones, palabra)
+    App(raiz, clases, vectores, palabra)
     raiz.mainloop()
 
 if __name__ == "__main__":

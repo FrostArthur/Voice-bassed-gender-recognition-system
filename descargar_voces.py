@@ -157,7 +157,7 @@ def guardar(lista, genero, extract_dir, salida):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--palabra", default="celular")
+    parser.add_argument("--palabra", default=config.PALABRA)
     parser.add_argument("--max-por-genero", type=int, default=100)
     parser.add_argument("--salida", default=config.RUTA_GRABACIONES)
     parser.add_argument("--splits-dir", default=os.path.join(
