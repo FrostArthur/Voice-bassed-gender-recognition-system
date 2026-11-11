@@ -7,7 +7,7 @@ FS = config.FS
 
 # Bin de cada corte: k = f * N / fs  (con N = 88200 y fs = 44100, k = 2f)
 PUNTOS_CORTE = [int(round(f * N_PUNTOS / FS)) for f in config.CORTES_HZ]
-LIMITES = [0, *PUNTOS_CORTE, N_PUNTOS]          # el espectro completo, k = 0 ... N-1
+LIMITES = [0, *PUNTOS_CORTE, N_PUNTOS // 2]          # el espectro completo, k = 0 ... N-1
 N_BANDAS = len(LIMITES) - 1
 
 assert 2 <= N_BANDAS <= 5, "El laboratorio exige entre 2 y 5 sub-bandas"

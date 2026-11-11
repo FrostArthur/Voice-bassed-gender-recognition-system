@@ -9,7 +9,7 @@ DURACION = 2               # segundos por audio
 N = FS * DURACION          # 88200 muestras -> FFT de N puntos, 0,5 Hz por bin (k = 2f)
 
 # ----------------------------- datos -----------------------------
-PALABRA = "trabajo"        # palabra del comando de voz
+PALABRA = "tiempo"        # palabra del comando de voz
 CLASES = ("hombre", "mujer")
 RUTA_GRABACIONES = str(RAIZ / "data" / "grabaciones")
 RUTA_MODELO = RAIZ / "models" / "modelo_genero.json"
